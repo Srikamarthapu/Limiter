@@ -1,6 +1,14 @@
 # Design and motion
 
-Limiter uses a restrained native-editorial design: warm surfaces, one clear action per screen, compact information groups, system typography, SF Symbols, and motion that explains state changes.
+Limiter uses a restrained native-editorial design: a deep-pine workspace, an amber threshold line, one clear action per screen, system typography, SF Symbols, and motion that explains state changes.
+
+## The threshold system
+
+- The sidebar is a persistent place, not a stack of navigation pills. Its fine amber edge represents the threshold between intention and distraction.
+- Today is one continuous editorial surface. It deliberately avoids dashboard cards, floating KPI tiles, badges, and decorative containers.
+- The current intention carries the strongest typographic weight, while outcomes read as a quiet ledger and recent choices read as a chronological rail.
+- Pine, warm white, and amber establish hierarchy through contrast and type instead of rounded rectangles or shadows.
+- The shell keeps global protection controls visible and labeled; compact icon-only controls are reserved for established, unambiguous actions.
 
 ## Product hierarchy
 

@@ -4,11 +4,11 @@
 
 ```bash
 swift test
-./scripts/package-app.sh 0.1.1
+./scripts/package-app.sh 0.1.2
 lipo -archs ~/Library/Caches/LimiterBuild/Limiter.app/Contents/MacOS/Limiter
 codesign --verify --deep --strict --verbose=2 ~/Library/Caches/LimiterBuild/Limiter.app
-hdiutil verify dist/Limiter-0.1.1.dmg
-shasum -a 256 -c dist/Limiter-0.1.1.dmg.sha256
+hdiutil verify dist/Limiter-0.1.2.dmg
+shasum -a 256 -c dist/Limiter-0.1.2.dmg.sha256
 ```
 
 The application must contain both `arm64` and `x86_64` architectures. Test onboarding, a real protected app, a deliberate session, expiry, pause protection, login-item recovery, dark mode, keyboard navigation, and VoiceOver before tagging.
@@ -18,7 +18,7 @@ The application must contain both `arm64` and `x86_64` architectures. Test onboa
 Update `CFBundleShortVersionString` in `Resources/Info.plist`, commit, then tag:
 
 ```bash
-git tag v0.1.1
+git tag v0.1.2
 git push origin main --tags
 ```
 

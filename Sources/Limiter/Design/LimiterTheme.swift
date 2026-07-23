@@ -16,26 +16,26 @@ struct LimiterPalette {
     static func resolve(_ colorScheme: ColorScheme) -> LimiterPalette {
         if colorScheme == .dark {
             return LimiterPalette(
-                background: Color(hex: 0x111816),
-                surface: Color(hex: 0x192321),
-                elevatedSurface: Color(hex: 0x22302D),
-                ink: Color(hex: 0xF5F2EA),
-                secondaryInk: Color(hex: 0xC5CBC6),
-                pine: Color(hex: 0x79A99C),
-                amber: Color(hex: 0xF0B353),
-                success: Color(hex: 0x7EC4B2),
+                background: Color(hex: 0x0D1513),
+                surface: Color(hex: 0x14211E),
+                elevatedSurface: Color(hex: 0x1D302B),
+                ink: Color(hex: 0xF3EFE6),
+                secondaryInk: Color(hex: 0xAEBAB4),
+                pine: Color(hex: 0x91B7AB),
+                amber: Color(hex: 0xE3A33B),
+                success: Color(hex: 0x8FC9B8),
                 danger: Color(hex: 0xFF8E8E),
-                border: Color.white.opacity(0.12)
+                border: Color.white.opacity(0.13)
             )
         }
         return LimiterPalette(
             background: Color(hex: 0xF6F2EA),
-            surface: .white,
-            elevatedSurface: Color(hex: 0xFFFCF6),
+            surface: Color(hex: 0xFFFCF6),
+            elevatedSurface: Color(hex: 0xEFE9DD),
             ink: Color(hex: 0x172321),
             secondaryInk: Color(hex: 0x52605D),
             pine: Color(hex: 0x315B52),
-            amber: Color(hex: 0xD58B26),
+            amber: Color(hex: 0xC97916),
             success: Color(hex: 0x2E6E60),
             danger: Color(hex: 0xB84242),
             border: Color(hex: 0x172321).opacity(0.10)

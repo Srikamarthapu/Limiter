@@ -7,3 +7,4 @@ dist/
 *.xccheckout
 Resources/*-chroma.png
 Screenshots/design-audit-*/
+Screenshots/design-qa-*/

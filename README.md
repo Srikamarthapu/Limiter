@@ -26,7 +26,7 @@ Limiter never force-quits another app. It does not request Accessibility, Screen
 
 ## Download and install
 
-Download `Limiter-0.1.0.dmg` from [GitHub Releases](https://github.com/Srikamarthapu/Limiter/releases), then:
+Download `Limiter-0.1.2.dmg` from [GitHub Releases](https://github.com/Srikamarthapu/Limiter/releases), then:
 
 1. Open the DMG and drag Limiter into Applications.
 2. In Applications, Control-click Limiter and choose **Open**.

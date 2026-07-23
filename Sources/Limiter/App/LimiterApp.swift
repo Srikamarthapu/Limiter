@@ -44,9 +44,10 @@ struct LimiterApp: App {
                 .modelContainer(container)
                 .preferredColorScheme(model.preferences.appearance.colorScheme)
                 .task { model.start() }
-                .frame(minWidth: 880, minHeight: 620)
+                .frame(minWidth: 980, minHeight: 680)
         }
-        .defaultSize(width: 1040, height: 720)
+        .defaultSize(width: 1200, height: 800)
+        .windowStyle(.hiddenTitleBar)
         .commands {
             CommandGroup(replacing: .appTermination) {
                 Button("Quit Limiter…") {
