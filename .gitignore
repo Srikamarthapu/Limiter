@@ -1,0 +1,8 @@
+.DS_Store
+._*
+.build/
+.swiftpm/
+dist/
+*.xcuserstate
+*.xccheckout
+Resources/*-chroma.png
