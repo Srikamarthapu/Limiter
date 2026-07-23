@@ -103,6 +103,7 @@ final class AppModel: ProtectionCoordinating {
     }
 
     var isLaunchAtLoginEnabled: Bool { loginItemManager.isEnabled }
+    var isLaunchAtLoginAvailable: Bool { loginItemManager.isAvailable }
     var launchAtLoginStatus: String { loginItemManager.statusDescription }
 
     func start() {
@@ -236,7 +237,7 @@ final class AppModel: ProtectionCoordinating {
             selectedMinutes: 15,
             isDemo: true
         )
-        presentOverlay(size: NSSize(width: 600, height: 720))
+        presentOverlay(size: NSSize(width: 600, height: 660))
     }
 
     func handleApplicationEvent(_ event: ApplicationEvent) {
@@ -286,7 +287,7 @@ final class AppModel: ProtectionCoordinating {
             selectedMinutes: rule.defaultSessionMinutes
         )
         saveAndRefresh()
-        presentOverlay(size: NSSize(width: 600, height: 720))
+        presentOverlay(size: NSSize(width: 600, height: 660))
     }
 
     func advanceIntervention() {

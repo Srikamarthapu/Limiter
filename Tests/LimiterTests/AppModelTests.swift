@@ -71,6 +71,7 @@ private final class RecordingApplicationController: ApplicationControlling {
 @MainActor
 private final class StubLoginItemManager: LoginItemManaging {
     var isEnabled = false
+    var isAvailable = true
     var statusDescription = "Not enabled"
     func setEnabled(_ enabled: Bool) throws { isEnabled = enabled }
     func openSystemSettings() { }

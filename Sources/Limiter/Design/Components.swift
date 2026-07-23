@@ -11,14 +11,35 @@ struct SurfaceCard<Content: View>: View {
     var body: some View {
         let palette = LimiterPalette.resolve(colorScheme)
         content
-            .padding(20)
+            .padding(18)
             .background(palette.surface)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .overlay {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .stroke(palette.border, lineWidth: 1)
             }
-            .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.18 : 0.06), radius: 16, y: 8)
+            .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.14 : 0.045), radius: 10, y: 4)
+    }
+}
+
+struct QuietPanel<Content: View>: View {
+    @Environment(\.colorScheme) private var colorScheme
+    private let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        let palette = LimiterPalette.resolve(colorScheme)
+        content
+            .padding(18)
+            .background(palette.elevatedSurface)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(palette.border, lineWidth: 1)
+            }
     }
 }
 
@@ -37,6 +58,7 @@ struct PrimaryButtonStyle: ButtonStyle {
             .background(isEnabled ? palette.pine : palette.pine.opacity(0.42))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .opacity(configuration.isPressed ? 0.82 : 1)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.985 : 1)
             .animation(reduceMotion ? nil : LimiterMotion.quick, value: configuration.isPressed)
     }
 }
@@ -56,6 +78,7 @@ struct AmberButtonStyle: ButtonStyle {
             .background(isEnabled ? palette.amber : palette.amber.opacity(0.4))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .opacity(configuration.isPressed ? 0.82 : 1)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.985 : 1)
             .animation(reduceMotion ? nil : LimiterMotion.quick, value: configuration.isPressed)
     }
 }
@@ -63,6 +86,7 @@ struct AmberButtonStyle: ButtonStyle {
 struct SecondaryButtonStyle: ButtonStyle {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func makeBody(configuration: Configuration) -> some View {
         let palette = LimiterPalette.resolve(colorScheme)
@@ -77,6 +101,8 @@ struct SecondaryButtonStyle: ButtonStyle {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .stroke(palette.border, lineWidth: 1)
             }
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.985 : 1)
+            .animation(reduceMotion ? nil : LimiterMotion.quick, value: configuration.isPressed)
     }
 }
 
@@ -126,6 +152,38 @@ struct MetricCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
+    }
+}
+
+struct InlineMetric: View {
+    @Environment(\.colorScheme) private var colorScheme
+    let title: String
+    let value: String
+    let systemImage: String
+    let tint: Color
+
+    var body: some View {
+        let palette = LimiterPalette.resolve(colorScheme)
+        HStack(spacing: 11) {
+            Image(systemName: systemImage)
+                .font(.body.weight(.semibold))
+                .foregroundStyle(tint)
+                .frame(width: 34, height: 34)
+                .background(tint.opacity(0.11), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(value)
+                    .font(.system(.title3, design: .rounded, weight: .bold))
+                    .monospacedDigit()
+                    .contentTransition(.numericText())
+                Text(title)
+                    .font(.caption)
+                    .foregroundStyle(palette.secondaryInk)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title), \(value)")
     }

@@ -75,7 +75,7 @@ For local installation after packaging:
 - `Sources/Limiter/Models`: SwiftData entities, preferences, and product state
 - `Tests/LimiterTests`: deterministic policy, grant, preference, and export tests
 
-See [Architecture](docs/ARCHITECTURE.md), [Contributing](CONTRIBUTING.md), and [Release process](docs/RELEASE.md) for details.
+See [Design and motion](docs/DESIGN.md), [Architecture](docs/ARCHITECTURE.md), [Contributing](CONTRIBUTING.md), and [Release process](docs/RELEASE.md) for details.
 
 ## License
 

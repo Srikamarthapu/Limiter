@@ -34,6 +34,7 @@ protocol ProtectionCoordinating: AnyObject {
 @MainActor
 protocol LoginItemManaging: AnyObject {
     var isEnabled: Bool { get }
+    var isAvailable: Bool { get }
     var statusDescription: String { get }
     func setEnabled(_ enabled: Bool) throws
     func openSystemSettings()

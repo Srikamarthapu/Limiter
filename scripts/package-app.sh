@@ -2,7 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VERSION="${1:-0.1.0}"
+INFO_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$ROOT/Resources/Info.plist")"
+VERSION="${1:-$INFO_VERSION}"
 BUILD_NUMBER="${BUILD_NUMBER:-1}"
 BUILD_ROOT="${LIMITER_BUILD_ROOT:-$HOME/Library/Caches/LimiterBuild}"
 DIST="$ROOT/dist"

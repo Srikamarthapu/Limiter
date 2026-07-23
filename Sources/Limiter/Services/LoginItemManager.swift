@@ -7,12 +7,16 @@ final class LoginItemManager: LoginItemManaging {
         SMAppService.mainApp.status == .enabled
     }
 
+    var isAvailable: Bool {
+        SMAppService.mainApp.status != .notFound
+    }
+
     var statusDescription: String {
         switch SMAppService.mainApp.status {
         case .enabled: "Enabled"
         case .notRegistered: "Not enabled"
         case .requiresApproval: "Needs approval in System Settings"
-        case .notFound: "Unavailable until Limiter is in Applications"
+        case .notFound: "macOS could not register this copy"
         @unknown default: "Unknown"
         }
     }

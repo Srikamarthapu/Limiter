@@ -23,6 +23,7 @@ struct InterventionView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Bindable var request: InterventionRequest
+    @FocusState private var returnToFocusFocused: Bool
 
     private var palette: LimiterPalette { .resolve(colorScheme) }
     private var remaining: Int { request.pauseSecondsRemaining(at: model.now) }
@@ -56,6 +57,11 @@ struct InterventionView: View {
         }
         .foregroundStyle(palette.ink)
         .padding(.bottom, 24)
+        .task(id: request.stage) {
+            if request.stage == .pause {
+                returnToFocusFocused = true
+            }
+        }
     }
 
     private var stageIndicator: some View {
@@ -71,7 +77,7 @@ struct InterventionView: View {
     }
 
     private var appHeader: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: 11) {
             ZStack {
                 Circle()
                     .stroke(palette.border, lineWidth: 6)
@@ -82,16 +88,16 @@ struct InterventionView: View {
                     .animation(reduceMotion ? nil : .linear(duration: 1), value: remaining)
                 AppIconView(
                     path: request.applicationURL?.path,
-                    size: 68,
+                    size: 56,
                     fallbackSystemImage: request.isDemo ? "gamecontroller.fill" : "app.fill"
                 )
             }
-            .frame(width: 100, height: 100)
+            .frame(width: 86, height: 86)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("\(request.applicationName) app, \(remaining) seconds remain in the pause")
 
             Text("Pause — you’re opening \(request.applicationName)")
-                .font(.system(size: 27, weight: .bold, design: .rounded))
+                .font(.system(size: 24, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
             Text(remaining > 0 ? "Give the impulse a moment. You can return to focus immediately." : "The pause is complete. Choose what matches your intention.")
                 .font(.body)
@@ -103,7 +109,7 @@ struct InterventionView: View {
 
     private var pauseStage: some View {
         ScrollView {
-            VStack(spacing: 22) {
+            VStack(spacing: 18) {
                 appHeader
 
                 VStack(alignment: .leading, spacing: 10) {
@@ -125,11 +131,11 @@ struct InterventionView: View {
                                 }
                                 .padding(.horizontal, 13)
                                 .frame(maxWidth: .infinity, minHeight: 46)
-                                .background(request.reason == reason ? palette.pine.opacity(0.12) : palette.elevatedSurface)
+                                .background(request.reason == reason ? palette.pine.opacity(0.10) : palette.elevatedSurface)
                                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                        .stroke(request.reason == reason ? palette.pine : palette.border, lineWidth: 1)
+                                        .stroke(request.reason == reason ? palette.pine : palette.border, lineWidth: request.reason == reason ? 1.5 : 1)
                                 }
                             }
                             .buttonStyle(.plain)
@@ -154,7 +160,7 @@ struct InterventionView: View {
                 )
             }
             .padding(.horizontal, 28)
-            .padding(.top, 18)
+            .padding(.top, 14)
         }
     }
 
@@ -191,7 +197,7 @@ struct InterventionView: View {
                 }
             }
 
-            SurfaceCard {
+            QuietPanel {
                 HStack(alignment: .top, spacing: 12) {
                     Image(systemName: "bell.badge")
                         .foregroundStyle(palette.amber)
@@ -251,6 +257,7 @@ struct InterventionView: View {
             }
             .buttonStyle(PrimaryButtonStyle())
             .keyboardShortcut(.defaultAction)
+            .focused($returnToFocusFocused)
 
             Button("Back") { model.goBackInIntervention() }
                 .buttonStyle(.plain)
@@ -288,6 +295,7 @@ struct InterventionView: View {
             }
             .buttonStyle(PrimaryButtonStyle())
             .keyboardShortcut(.defaultAction)
+            .focused($returnToFocusFocused)
 
             Button {
                 model.advanceIntervention()

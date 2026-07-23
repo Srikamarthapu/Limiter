@@ -68,12 +68,14 @@ struct TodayView: View {
     var body: some View {
         let palette = LimiterPalette.resolve(colorScheme)
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 20) {
                 HStack(alignment: .top) {
                     SectionHeader(
                         eyebrow: Date.now.formatted(.dateTime.weekday(.wide).month(.wide).day()),
-                        title: greeting,
-                        subtitle: model.protectionStatusText
+                        title: "Today",
+                        subtitle: model.isProtectionPaused
+                            ? model.protectionStatusText
+                            : "Limiter is watching \(model.enabledRuleCount) protected app\(model.enabledRuleCount == 1 ? "" : "s")."
                     )
                     Spacer()
                     StatusPill(
@@ -83,51 +85,26 @@ struct TodayView: View {
                     )
                 }
 
-                HStack(spacing: 16) {
-                    MetricCard(
-                        title: "Launches declined",
-                        value: "\(model.declinedTodayCount)",
-                        systemImage: "arrow.uturn.backward",
-                        tint: palette.success
-                    )
-                    MetricCard(
-                        title: "Intentional sessions",
-                        value: "\(model.intentionalTodayCount)",
-                        systemImage: "checkmark.seal",
-                        tint: palette.amber
-                    )
-                    MetricCard(
-                        title: "Allowed session time",
-                        value: "\(model.allowedMinutesToday)m",
-                        systemImage: "timer",
-                        tint: palette.pine
-                    )
-                }
-
                 SurfaceCard {
-                    HStack(alignment: .top, spacing: 18) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                .fill(palette.amber.opacity(0.15))
-                            Image(systemName: "target")
-                                .font(.title2)
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Label("Current intention", systemImage: "target")
+                                .font(.caption.weight(.bold))
                                 .foregroundStyle(palette.amber)
-                        }
-                        .frame(width: 52, height: 52)
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("What are you protecting time for?")
-                                .font(.headline)
-                            TextField("Set your current intention", text: Binding(
-                                get: { model.preferences.currentIntention },
-                                set: { model.preferences.currentIntention = $0 }
-                            ))
-                            .textFieldStyle(.plain)
-                            .font(.title3)
-                            Divider()
-                            Text("Limiter will bring this back when a protected app opens.")
+                                .textCase(.uppercase)
+                            Spacer()
+                            Text("Shown at the moment of distraction")
                                 .font(.caption)
                                 .foregroundStyle(palette.secondaryInk)
                         }
+                        TextField("What did you sit down to do?", text: Binding(
+                            get: { model.preferences.currentIntention },
+                            set: { model.preferences.currentIntention = $0 }
+                        ))
+                        .textFieldStyle(.plain)
+                        .font(.system(.title2, design: .rounded, weight: .semibold))
+                        .accessibilityLabel("Current intention")
+                        Divider()
                     }
                 }
 
@@ -141,16 +118,49 @@ struct TodayView: View {
                     }
                 }
 
+                QuietPanel {
+                    HStack(spacing: 16) {
+                        InlineMetric(
+                            title: "Returned to focus",
+                            value: "\(model.declinedTodayCount)",
+                            systemImage: "arrow.uturn.backward",
+                            tint: palette.success
+                        )
+                        Divider().frame(height: 38)
+                        InlineMetric(
+                            title: "Intentional sessions",
+                            value: "\(model.intentionalTodayCount)",
+                            systemImage: "checkmark.seal",
+                            tint: palette.amber
+                        )
+                        Divider().frame(height: 38)
+                        InlineMetric(
+                            title: "Allowed time",
+                            value: "\(model.allowedMinutesToday)m",
+                            systemImage: "timer",
+                            tint: palette.pine
+                        )
+                    }
+                }
+
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Recent choices")
-                        .font(.title2.bold())
+                        .font(.title3.bold())
                     if model.reflections.isEmpty {
-                        SurfaceCard {
-                            EmptyStateView(
-                                systemImage: "sparkles",
-                                title: "Your first deliberate choice will appear here",
-                                message: "Limiter records outcomes locally without claiming to know how much time you saved."
-                            )
+                        QuietPanel {
+                            HStack(spacing: 14) {
+                                Image(systemName: "clock.arrow.circlepath")
+                                    .font(.title2)
+                                    .foregroundStyle(palette.pine)
+                                    .accessibilityHidden(true)
+                                VStack(alignment: .leading, spacing: 3) {
+                                    Text("No choices yet")
+                                        .font(.headline)
+                                    Text("The next time Limiter catches an app, the outcome will appear here—privately and without a score.")
+                                        .font(.subheadline)
+                                        .foregroundStyle(palette.secondaryInk)
+                                }
+                            }
                         }
                     } else {
                         ForEach(model.reflections.prefix(4)) { record in
@@ -162,13 +172,6 @@ struct TodayView: View {
             .padding(30)
             .frame(maxWidth: 1050)
         }
-    }
-
-    private var greeting: String {
-        let hour = Calendar.current.component(.hour, from: .now)
-        if hour < 12 { return "Good morning." }
-        if hour < 18 { return "Good afternoon." }
-        return "Good evening."
     }
 }
 
@@ -287,16 +290,20 @@ struct ProtectedAppsView: View {
                         .foregroundStyle(palette.secondaryInk)
                 }
                 Spacer()
-                Picker("Default", selection: Binding(
-                    get: { application.defaultSessionMinutes },
-                    set: { model.updateRule(application, minutes: $0) }
-                )) {
+                Menu {
                     ForEach([5, 10, 15, 30], id: \.self) { minute in
-                        Text("\(minute) min").tag(minute)
+                        Button("\(minute) minutes") {
+                            model.updateRule(application, minutes: minute)
+                        }
                     }
+                } label: {
+                    Label("\(application.defaultSessionMinutes) min", systemImage: "timer")
+                        .frame(minWidth: 86, alignment: .leading)
                 }
-                .pickerStyle(.menu)
-                .frame(width: 130)
+                .menuStyle(.borderlessButton)
+                .fixedSize()
+                .accessibilityLabel("Default duration for \(application.name)")
+                .accessibilityValue("\(application.defaultSessionMinutes) minutes")
                 Toggle("Protected", isOn: Binding(
                     get: { application.isEnabled },
                     set: { model.updateRule(application, enabled: $0) }
@@ -307,7 +314,7 @@ struct ProtectedAppsView: View {
                     model.removeProtectedApplication(application)
                 } label: {
                     Image(systemName: "trash")
-                        .frame(width: 32, height: 32)
+                        .frame(width: 44, height: 44)
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(palette.danger)

@@ -57,11 +57,12 @@ struct SettingsContentView: View {
                 get: { model.isLaunchAtLoginEnabled },
                 set: { model.setLaunchAtLogin($0) }
             ))
+            .disabled(!model.isLaunchAtLoginAvailable)
             LabeledContent("Login item") {
                 Text(model.launchAtLoginStatus)
                     .foregroundStyle(palette.secondaryInk)
             }
-            if model.launchAtLoginStatus.contains("approval") {
+            if model.launchAtLoginStatus.contains("approval") || !model.isLaunchAtLoginAvailable {
                 Button("Open Login Items Settings") { model.openLoginItemSettings() }
             }
         }

@@ -6,3 +6,4 @@ dist/
 *.xcuserstate
 *.xccheckout
 Resources/*-chroma.png
+Screenshots/design-audit-*/
