@@ -62,7 +62,10 @@ hdiutil create \
   -ov \
   "$DMG" >/dev/null
 
-shasum -a 256 "$DMG" > "$DMG.sha256"
+(
+  cd "$DIST"
+  shasum -a 256 "$(basename "$DMG")" > "$(basename "$DMG").sha256"
+)
 
 printf 'Built %s\n' "$APP"
 printf 'Packaged %s\n' "$DMG"
